@@ -2,40 +2,42 @@
 
 namespace App\Command;
 
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use League\Csv\Reader;
+
+
+// bin/console dnd:print-csv /var/www/html/Projects/librairieDnd/public/products.csv
 
 class DndPrintCsvCommand extends Command
 {
     protected static $defaultName = 'dnd:print-csv';
-    protected static $defaultDescription = 'Add a short description for your command';
+    protected static $defaultDescription = 'Displays a csv file content in console';
 
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('filepath', InputArgument::OPTIONAL, 'Absolute path to your CSV file')
         ;
     }
+
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $filepath = $input->getArgument('filepath');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        $csv = Reader::createFromPath($filepath, 'r');
+        
+        foreach ($csv as $line) {
+            $io->info($line);
         }
-
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        // dd($csv);
 
         return Command::SUCCESS;
     }
