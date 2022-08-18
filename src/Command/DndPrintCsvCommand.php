@@ -29,16 +29,15 @@ class DndPrintCsvCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
         $filepath = $input->getArgument('filepath');
 
         $csv = Reader::createFromPath($filepath, 'r');
-        
-        foreach ($csv as $line) {
-            $io->info($line);
+        $csv->setDelimiter(';');
+        $csv->setHeaderOffset(0);
+        foreach ($csv->getRecords() as $record) {
+        $output->writeln(print_r($record));
         }
-        // dd($csv);
-
+        dd($csv);
         return Command::SUCCESS;
     }
 }
