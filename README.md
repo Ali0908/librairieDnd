@@ -9,7 +9,9 @@ Tâches faites:
 - [x] Importer le fichier CSV
 - [x] Afficher les données du fichier CSV
 - [x] Transformer les données du fichier CSV sous format array
-- [x] Transformer les données de created_au format demandé
+- [x] Transformer les données de created_at au format demandé
+- [x] Transformer les données de decription au format demandé
+- [x] Transformer les données dd price au format demandé
 
 Tâches restantes:
 - [] Transformer les données du tableau dans le format indiqué

@@ -51,7 +51,7 @@ class DndPrintCsvCommand extends Command
         $objectjson=json_encode($record);
         $object=json_decode($objectjson);
         
-      
+        
         //Retrieval in a new variable of the created_at object
         $createdAt=$object->created_at;
 
@@ -69,11 +69,32 @@ class DndPrintCsvCommand extends Command
         $description=$object->description;
 
         //Added the ability to embed HTML using the Heredoc syntax
+         // TODO : vérifier que cette ligne code permet de bien prendre en charge du contenu HTML
         $newDescription=$description . <<<EOT
         EOT;
         $object->description=$newDescription;
         
+        //Retrieval in a new variable of the price and currency object
+        $price=$object->price;
+
+        //Display the price as a decimal value using a comma as a separator and concatenation of the currency
+        $newFormatPrice= number_format($price, 1, ',', ' ') . $object->currency;
+        $object->price=$newFormatPrice;
+
+        //Deletion of the currency line
+        unset($object->currency);
+        //  dd($object);
+        // exit;
         
+        //https://symfony.com/doc/current/components/string.html#slugger
+
+
+
+
+
+
+
+
         //Displaying data in an online format
         $output->writeln(print_r($record));
         }
