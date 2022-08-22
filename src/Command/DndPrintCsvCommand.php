@@ -37,6 +37,7 @@ class DndPrintCsvCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        //Set up a variable to improve the layout in the terminal
         $io = new SymfonyStyle($input, $output);
         $io->title("Bienvenue dans la librairie PHP de Dn'd");
         $filepath = $input->getArgument('filepath');
@@ -50,7 +51,8 @@ class DndPrintCsvCommand extends Command
         $output->writeln('+--------+--------+---------+--------------------+------------------------------+-----------------------------+');
         $output->writeln('| Sku    | Status | Price   | Description        | Created At                   | Slug                        |');
         $output->writeln('+--------+--------+---------+--------------------+------------------------------+-----------------------------+');
-
+        
+        //Setting up a loop to retrieve data from the CSV file
         foreach ($csv->getRecords() as $record) {
                 
                 $product= (new Product ())

@@ -14,12 +14,13 @@ Tâches faites:
 - [x] Transformer les données dd price au format demandé
 
 Tâches restantes:
-- [] Transformer les données du tableau dans le format indiqué
-- [] Implémenter la commande
+
+- [] Impletmenter les données modifiées created_at, description,price qui sont sur le fichier Propriétés.md dans l'entity Product
+- [] Afficher les données sur la console
 - [] ajouter un paramètre à la commande pour afficher du JSON
  - [] exécuter la commande entre 7h et 19h
 
 
-Question:
+Bilan:
 
-est-ce que je dois créer des entités ?
+J'ai rencontré des difficultés dans la mise en place d'une librairie PHP car je n'ai réalisé un tel projet. J'ai consulté énormement de projets similaires et de la documentation tout en essayant de respecter au mieux l'ensemble des consignes. J'ai grandement apprécié travailler sur ce challenge en espérant pouvoir travailler à vos côtés sur d'autres projets.
