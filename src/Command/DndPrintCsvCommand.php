@@ -2,8 +2,10 @@
 
 namespace App\Command;
 
+use App\Entity\Product;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,12 +14,16 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use League\Csv\Reader;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+
 
 
 // bin/console dnd:print-csv /var/www/html/Projects/librairieDnd/public/products.csv
 
 class DndPrintCsvCommand extends Command
 {
+
+
     protected static $defaultName = 'dnd:print-csv';
     protected static $defaultDescription = 'Displays a csv file content in console';
 
@@ -31,74 +37,38 @@ class DndPrintCsvCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+        $io->title("Bienvenue dans la librairie PHP de Dn'd");
         $filepath = $input->getArgument('filepath');
 
         //load the CSV document from a file path by using https://csv.thephpleague.com/
         $csv = Reader::createFromPath($filepath, 'r');
         $csv->setHeaderOffset(0);
-        
-        //remove the semicolons from the csv file
         $csv->setDelimiter(';');
-        
-        //Setting up a loop to go through the rows of our table
+
+
+        $output->writeln('+--------+--------+---------+--------------------+------------------------------+-----------------------------+');
+        $output->writeln('| Sku    | Status | Price   | Description        | Created At                   | Slug                        |');
+        $output->writeln('+--------+--------+---------+--------------------+------------------------------+-----------------------------+');
+
         foreach ($csv->getRecords() as $record) {
-        
-            // https://www.php.net/manual/fr/datetime.modify.php
-            // https://www.php.net/manual/fr/datetime.createfromformat.php
-        
-        // Transformation of array data into objects
-        // TODO : vérifier pourquoi les données du second array n'ont pas été prises en compte
-        $objectjson=json_encode($record);
-        $object=json_decode($objectjson);
-        
-        
-        //Retrieval in a new variable of the created_at object
-        $createdAt=$object->created_at;
-
-        //Transformation of the variable into 
-        $newCreatedAt= new DateTime($createdAt);
-
-        //Setting up the right format
-        $newFormatCreatedAt= $newCreatedAt->format("l,d-M-Y H:i:s e");
-        //$newFormatCreatedAt)="Wednesday,12-Dec-2018 10:34:39 Europe/Berlin";
-
-        //transmission of the new data to our association table
-        $object->created_at=$newFormatCreatedAt;
-        
-        //Retrieval in a new variable of the description object
-        $description=$object->description;
-
-        //Added the ability to embed HTML using the Heredoc syntax
-         // TODO : vérifier que cette ligne code permet de bien prendre en charge du contenu HTML
-        $newDescription=$description . <<<EOT
-        EOT;
-        $object->description=$newDescription;
-        
-        //Retrieval in a new variable of the price and currency object
-        $price=$object->price;
-
-        //Display the price as a decimal value using a comma as a separator and concatenation of the currency
-        $newFormatPrice= number_format($price, 1, ',', ' ') . $object->currency;
-        $object->price=$newFormatPrice;
-
-        //Deletion of the currency line
-        unset($object->currency);
-        //  dd($object);
-        // exit;
-        
-        //https://symfony.com/doc/current/components/string.html#slugger
-
-
-
-
-
-
-
-
-        //Displaying data in an online format
-        $output->writeln(print_r($record));
+                
+                $product= (new Product ())
+                ->setSku($record['sku'])  
+                ->setTitle($record['title'])
+                ->setIsEnabled($record['is_enabled'])
+                ->setPrice($record['price'])
+                ->setCurrency($record['currency'])
+                ->setDescription($record['description'])
+                ->setCreatedAt( new \DateTime($record['created_at']))
+                ;
+                
+                $output->writeln(var_dump($product));       
         }
-        // ;
+        
+        
+        $output->writeln('+--------+--------+---------+--------------------+------------------------------+-----------------------------+');
+        $io->success('Command exited cleanly!');
         return Command::SUCCESS;
     }
 }
